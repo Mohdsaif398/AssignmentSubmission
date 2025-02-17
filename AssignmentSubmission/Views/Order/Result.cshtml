@@ -1,0 +1,47 @@
+﻿@model OrderModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Order Summary</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0"><i class="fas fa-receipt"></i> Order Summary</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-muted">Order Amount:</h5>
+                        <h5 class="fw-bold">$@Model.OrderAmount</h5>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-muted">Discount:</h5>
+                        <h5 class="fw-bold text-success">- $@Model.Discount</h5>
+                    </div>
+                    <hr class="my-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="text-primary fw-bold">Final Total:</h4>
+                        <h4 class="fw-bold text-dark">$@Model.FinalTotal</h4>
+                    </div>
+                </div>
+                <div class="card-footer text-center bg-light py-3">
+                    <a asp-action="Index" class="btn btn-success btn-lg px-4">
+                        <i class="fas fa-shopping-cart"></i> Place Another Order
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
