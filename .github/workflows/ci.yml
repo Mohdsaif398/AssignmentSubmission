@@ -1,32 +1,56 @@
-name: Build and Test ASP.NET Core
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main  # Run when you push to the main branch.
+      - main
   pull_request:
     branches:
-      - main  # Run when you create a pull request to the main branch.
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # This specifies that the job will run on an Ubuntu server.
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # This checks out the code from your repository.
+        uses: actions/checkout@v3
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v1  # This sets up the .NET SDK.
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.0'  # Use your .NET version here.
+          dotnet-version: '8.0.x' # Adjust based on your project version
 
       - name: Restore dependencies
-        run: dotnet restore  # Restore the project's dependencies.
+        run: dotnet restore
 
-      - name: Build project
-        run: dotnet build --configuration Release  # Build the project in release mode.
+      - name: Build the project
+        run: dotnet build --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-restore  # Run tests to check if everything works.
+        run: dotnet test --configuration Release --no-build --verbosity normal
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish the application
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Deploy to Server (Example for FTP)
+        uses: SamKirkland/FTP-Deploy-Action@4.3.1
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./publish/
